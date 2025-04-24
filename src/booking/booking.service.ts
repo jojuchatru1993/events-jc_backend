@@ -138,16 +138,6 @@ export class BookingService {
   }
 
   async removeByUserAndEvent(userId: string, eventId: string, currentUser: User): Promise<void> {
-    if (
-      currentUser.roles.includes(ValidRoles.CLIENT) &&
-      !currentUser.roles.includes(ValidRoles.ADMIN) &&
-      currentUser.id !== userId
-    ) {
-      throw new ForbiddenException(
-        'You do not have permission to delete this booking',
-      );
-    }
-
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
       throw new NotFoundException('User not found');
