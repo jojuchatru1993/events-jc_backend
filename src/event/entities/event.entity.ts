@@ -54,6 +54,7 @@ export class Event {
   sanitizeFields() {
     this.title = this.title.toLocaleUpperCase().trim();
     this.description = this.description.toLocaleUpperCase().trim();
+    this.organizer = this.organizer.toLocaleUpperCase().trim();
     this.location = this.location.toLocaleUpperCase().trim();
   }
 }
