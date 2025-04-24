@@ -30,6 +30,8 @@ export class CreateEventDto {
 
   @IsString()
   @IsNotEmpty()
+  @MinLength(6)
+  @MaxLength(100)
   location: string;
 
   @IsString()
