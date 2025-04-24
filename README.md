@@ -1,98 +1,93 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Events JC Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Descripción
+Backend para la gestión de eventos y reservas desarrollado con NestJS. Esta aplicación permite la gestión completa de eventos, incluyendo creación, actualización, reserva y administración de usuarios.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Servicios Principales
 
-## Description
+### Servicio de Autenticación (AuthModule)
+- **Funcionalidades**: 
+  - Registro y autenticación de usuarios
+  - Gestión de sesiones con JWT
+  - Protección de rutas con Guards
+  - Recuperación de contraseñas
+- **Tecnologías**: 
+  - Passport
+  - JWT
+  - Bcrypt para encriptación de contraseñas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Servicio de Eventos (EventModule)
+- **Funcionalidades**:
+  - Creación y gestión de eventos
+  - Búsqueda y filtrado de eventos
+  - Categorización de eventos
+- **Características**:
+  - Soporte para fechas y zonas horarias (date-fns, date-fns-tz)
+  - Validación de datos con class-validator
 
-## Project setup
+### Servicio de Reservas (BookingModule)
+- **Funcionalidades**:
+  - Creación y gestión de reservas para eventos
+  - Verificación de disponibilidad
+  - Confirmación de reservas
+- **Características**:
+  - Integración con el servicio de eventos
+  - Validación de conflictos de horarios
+
+### Servicio de Email (MailModule)
+- **Funcionalidades**:
+  - Envío de notificaciones por correo electrónico
+  - Plantillas para diferentes tipos de notificaciones
+- **Tecnologías**:
+  - @nestjs-modules/mailer
+
+## Base de Datos
+- PostgreSQL con TypeORM
+- Configuración basada en variables de entorno
+- Zona horaria configurada para América/Bogotá
+- **Containerización**: Base de datos PostgreSQL implementada con Docker
+  - Imagen: postgres:17.3
+  - Volumen persistente para almacenamiento de datos
+  - Configuración mediante variables de entorno
+
+## Características Técnicas
+- Desarrollo con TypeScript
+- Validación de datos con class-validator y class-transformer
+- Estructura modular siguiendo los principios de NestJS
+- Pruebas unitarias con Jest
+- Docker para la gestión de la base de datos
+
+## Requisitos
+- Node.js
+- Docker y Docker Compose (para la base de datos)
+- Variables de entorno configuradas (DB_HOST, DB_PORT, DB_NAME, DB_USERNAME, DB_PASSWORD, DB_CONTAINER_NAME)
+
+## Instalación
 
 ```bash
-$ yarn install
+# Iniciar la base de datos con Docker
+docker-compose up -d
+
+# Instalar dependencias
+yarn install
+
+# Desarrollo
+yarn start:dev
+
+# Producción
+yarn build
+yarn start:prod
 ```
 
-## Compile and run the project
+## Pruebas
 
 ```bash
-# development
-$ yarn run start
+# Pruebas unitarias
+yarn test
 
-# watch mode
-$ yarn run start:dev
+# Cobertura de pruebas
+yarn test:cov
 
-# production mode
-$ yarn run start:prod
+# Pruebas e2e
+yarn test:e2e
 ```
-
-## Run tests
-
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
