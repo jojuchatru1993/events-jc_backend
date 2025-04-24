@@ -53,10 +53,9 @@ export class BookingController {
   @Auth(ValidRoles.ADMIN, ValidRoles.CLIENT)
   @Delete()
   removeByUserAndEvent(
-    @Query('userId') userId: string,
     @Query('eventId') eventId: string,
     @GetUser() user: User
   ) {
-    return this.bookingService.removeByUserAndEvent(userId, eventId, user);
+    return this.bookingService.removeByUserAndEvent(user.id, eventId, user);
   }
 }
