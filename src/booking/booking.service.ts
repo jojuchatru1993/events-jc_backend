@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
@@ -35,9 +36,15 @@ export class BookingService {
 
     const event = await this.eventRepository.findOne({
       where: { id: eventId },
+      relations: ['bookings'],
     });
     if (!event) {
       throw new NotFoundException('Event not found');
+    }
+
+    const bookingsCount = event.bookings ? event.bookings.length : 0;
+    if (bookingsCount >= event.capacity) {
+      throw new BadRequestException('The event is full. Maximum capacity reached');
     }
 
     let user: User = currentUser;
@@ -76,7 +83,10 @@ export class BookingService {
   }
 
   async findOne(id: string): Promise<Booking> {
-    const booking = await this.bookingRepository.findOne({ where: { id } });
+    const booking = await this.bookingRepository.findOne({ 
+      where: { id },
+      relations: ['event', 'user'] 
+    });
     if (!booking) {
       throw new NotFoundException('Booking not found');
     }
@@ -92,10 +102,19 @@ export class BookingService {
     if (updateBookingDto.eventId) {
       const event = await this.eventRepository.findOne({
         where: { id: updateBookingDto.eventId },
+        relations: ['bookings'],
       });
       if (!event) {
         throw new NotFoundException('Event not found');
       }
+      
+      if (booking.event.id !== event.id) {
+        const bookingsCount = event.bookings ? event.bookings.length : 0;
+        if (bookingsCount >= event.capacity) {
+          throw new BadRequestException('The event is full. Maximum capacity reached');
+        }
+      }
+      
       booking.event = event;
     }
 
@@ -156,7 +175,7 @@ export class BookingService {
     });
 
     if (!booking) {
-      throw new NotFoundException('Reserva no encontrada');
+      throw new NotFoundException('Booking not found');
     }
 
     await this.bookingRepository.delete(booking.id);
