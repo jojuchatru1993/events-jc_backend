@@ -136,4 +136,39 @@ export class BookingService {
     
     await this.bookingRepository.delete(id);
   }
+
+  async removeByUserAndEvent(userId: string, eventId: string, currentUser: User): Promise<void> {
+    if (
+      currentUser.roles.includes(ValidRoles.CLIENT) &&
+      !currentUser.roles.includes(ValidRoles.ADMIN) &&
+      currentUser.id !== userId
+    ) {
+      throw new ForbiddenException(
+        'You do not have permission to delete this booking',
+      );
+    }
+
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const event = await this.eventRepository.findOne({ where: { id: eventId } });
+    if (!event) {
+      throw new NotFoundException('Event not found');
+    }
+
+    const booking = await this.bookingRepository.findOne({
+      where: {
+        user: { id: userId },
+        event: { id: eventId }
+      }
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Reserva no encontrada');
+    }
+
+    await this.bookingRepository.delete(booking.id);
+  }
 }

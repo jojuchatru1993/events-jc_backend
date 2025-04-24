@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -15,7 +16,7 @@ import { ValidRoles } from '../auth/interfaces/valid-roles.interface';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../auth/entities/user.entity';
 
-@Controller('booking')
+@Controller('bookings')
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
@@ -47,5 +48,15 @@ export class BookingController {
   @Delete(':id')
   remove(@Param('id') id: string, @GetUser() user: User) {
     return this.bookingService.remove(id, user);
+  }
+
+  @Auth(ValidRoles.ADMIN, ValidRoles.CLIENT)
+  @Delete()
+  removeByUserAndEvent(
+    @Query('userId') userId: string,
+    @Query('eventId') eventId: string,
+    @GetUser() user: User
+  ) {
+    return this.bookingService.removeByUserAndEvent(userId, eventId, user);
   }
 }
