@@ -139,8 +139,19 @@ export class AuthService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.userRepository.create(createUserDto);
-    return await this.userRepository.save(user);
+    try {
+      const user = this.userRepository.create(createUserDto);
+      return await this.userRepository.save(user);
+    } catch (error) {
+      if (error.code === '23505') {
+        throw new ForbiddenException(
+          'The email or telephone is already registered',
+        );
+      }
+      throw new UnauthorizedException(
+        'Error creating the user. Please contact the administrator',
+      );
+    }
   }
 
   async findAll(): Promise<User[]> {
