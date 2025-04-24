@@ -12,6 +12,9 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { ValidRoles } from '../auth/interfaces/valid-roles.interface';
+import { User } from '../auth/entities/user.entity';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { OptionalAuth, OptionalUser } from '../auth/decorators/optional-auth.decorator';
 
 @Controller('events')
 export class EventController {
@@ -23,16 +26,16 @@ export class EventController {
     return this.eventService.create(createEventDto);
   }
 
-  @Auth(ValidRoles.ADMIN, ValidRoles.CLIENT)
+  @OptionalAuth()
   @Get()
-  findAll() {
-    return this.eventService.findAll();
+  findAll(@OptionalUser() user?: User) {
+    return this.eventService.findAll(user?.id);
   }
 
   @Auth(ValidRoles.ADMIN, ValidRoles.CLIENT)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.eventService.findOne(id);
+  findOne(@Param('id') id: string, @GetUser() user: User) {
+    return this.eventService.findOne(id, user);
   }
 
   @Auth(ValidRoles.ADMIN)
